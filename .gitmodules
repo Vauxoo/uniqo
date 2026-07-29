@@ -38,3 +38,7 @@
 	path = account-analytic
 	url = git@github.com:Vauxoo/account-analytic.git
     branch = 16.0
+[submodule "addons-vauxoo"]
+	path = addons-vauxoo
+	url = git@github.com:Vauxoo/addons-vauxoo.git
+	branch = 16.0
