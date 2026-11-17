@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="BekvamOriginPopup" owl="1">
+        <div class="popup popup-confirm bekvam-origin-popup">
+            <header class="title">Visita a Bekväm</header>
+            <main class="body">
+                <label for="bekvam-visit">¿Es su primera visita a una tienda física Bekväm?</label>
+                <select id="bekvam-visit" t-on-change="onVisitChange" t-att-value="state.visit">
+                    <option value="">Seleccione una respuesta</option>
+                    <option value="first_visit" t-att-selected="state.visit === 'first_visit'">Sí, es mi primera visita</option>
+                    <option value="previous_visit" t-att-selected="state.visit === 'previous_visit'">No, ya había visitado una tienda Bekväm</option>
+                </select>
+                <t t-if="state.visit === 'first_visit'">
+                    <label for="bekvam-channel">¿Cómo conoció Bekväm?</label>
+                    <select id="bekvam-channel" t-on-change="onChannelChange" t-att-value="state.channel">
+                        <option value="">Seleccione un canal</option>
+                        <option value="facebook" t-att-selected="state.channel === 'facebook'">Facebook</option>
+                        <option value="instagram" t-att-selected="state.channel === 'instagram'">Instagram</option>
+                        <option value="tiktok" t-att-selected="state.channel === 'tiktok'">TikTok</option>
+                        <option value="google" t-att-selected="state.channel === 'google'">Google</option>
+                        <option value="referral" t-att-selected="state.channel === 'referral'">Referido</option>
+                        <option value="mall" t-att-selected="state.channel === 'mall'">Mall</option>
+                    </select>
+                </t>
+                <p class="bekvam-error" t-if="state.error" role="alert"><t t-esc="state.error"/></p>
+            </main>
+            <footer class="footer">
+                <div class="button cancel" t-on-click="cancel">Volver</div>
+                <div class="button confirm" t-on-click="confirm">Continuar</div>
+            </footer>
+        </div>
+    </t>
+    <t t-inherit="point_of_sale.PaymentScreen" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('payment-buttons')]" position="inside">
+            <div t-if="bekvamOriginLabel" class="button bekvam-origin-edit" t-on-click="editBekvamOrigin">
+                <span>Visita: <t t-esc="bekvamOriginLabel"/></span>
+            </div>
+        </xpath>
+    </t>
+    <t t-inherit="pos_uniqo.OrderValidationPopup" t-inherit-mode="extension" owl="1">
+        <xpath expr="//main[hasclass('body')]" position="inside">
+            <p t-if="bekvamOriginLabel">Visita: <strong><t t-esc="bekvamOriginLabel"/></strong></p>
+        </xpath>
+    </t>
+</templates>

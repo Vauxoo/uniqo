@@ -1,0 +1,5 @@
+.bekvam-origin-popup .body { text-align: left; padding: 20px; }
+.bekvam-origin-popup label { display: block; margin: 12px 0 8px; line-height: 1.4; }
+.bekvam-origin-popup select { width: 100%; min-height: 44px; font-size: 16px; }
+.bekvam-origin-popup .bekvam-error { color: #a12222; margin-top: 14px; }
+.bekvam-origin-edit { white-space: normal; }
