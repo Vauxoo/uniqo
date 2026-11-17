@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="origin_report_tree" model="ir.ui.view">
+        <field name="name">bekvam.origin.lines.tree</field>
+        <field name="model">pos.order.line</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" delete="false" string="Ventas por visita">
+                <field name="date_order"/>
+                <field name="order_id"/>
+                <field name="bekvam_attributed_config_id" string="Sucursal atribuida"/>
+                <field name="pos_config_id" string="TPV que procesó" optional="hide"/>
+                <field name="bekvam_visit_type" string="Visita declarada"/>
+                <field name="bekvam_discovery_channel" string="Canal declarado"/>
+                <field name="product_id"/>
+                <field name="qty"/>
+                <field name="price_subtotal" string="Venta neta sin IVA" sum="Total por moneda"/>
+                <field name="price_subtotal_incl" string="Importe con IVA" optional="hide"/>
+                <field name="bekvam_currency_id" string="Moneda"/>
+                <field name="refunded_orderline_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+    <record id="origin_report_search" model="ir.ui.view">
+        <field name="name">bekvam.origin.lines.search</field>
+        <field name="model">pos.order.line</field>
+        <field name="arch" type="xml">
+            <search string="Ventas por visita">
+                <field name="order_id"/>
+                <field name="bekvam_attributed_config_id"/>
+                <field name="bekvam_visit_type"/>
+                <field name="bekvam_discovery_channel"/>
+                <filter name="period" string="Período" date="date_order"/>
+                <filter name="first" string="Primeras visitas" domain="[('bekvam_visit_type', '=', 'first_visit')]"/>
+                <filter name="historical" string="Sin clasificación histórica" domain="[('bekvam_visit_type', '=', 'historical_unknown')]"/>
+                <filter name="unattributed" string="Devolución sin atribución" domain="[('bekvam_visit_type', '=', 'unattributed')]"/>
+                <filter name="returns" string="Devoluciones" domain="[('qty', '&lt;', 0)]"/>
+                <group string="Agrupar">
+                    <filter name="branch" string="Sucursal atribuida" context="{'group_by': 'bekvam_attributed_config_id'}"/>
+                    <filter name="visit" string="Clasificación" context="{'group_by': 'bekvam_visit_type'}"/>
+                    <filter name="channel" string="Canal" context="{'group_by': 'bekvam_discovery_channel'}"/>
+                    <filter name="month" string="Mes" context="{'group_by': 'date_order:month'}"/>
+                    <filter name="currency" string="Moneda" context="{'group_by': 'bekvam_currency_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="origin_report_pivot" model="ir.ui.view">
+        <field name="name">bekvam.origin.lines.pivot</field>
+        <field name="model">pos.order.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Ventas netas sin IVA por visita">
+                <field name="bekvam_currency_id" type="row"/>
+                <field name="bekvam_attributed_config_id" type="row"/>
+                <field name="bekvam_visit_type" type="row"/>
+                <field name="date_order" type="col" interval="month"/>
+                <field name="price_subtotal" type="measure" string="Venta neta sin IVA"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="origin_report_action" model="ir.actions.act_window">
+        <field name="name">Ventas por primera visita</field>
+        <field name="res_model">pos.order.line</field>
+        <field name="view_mode">pivot,tree</field>
+        <field name="search_view_id" ref="origin_report_search"/>
+        <field name="domain">[('bekvam_in_scope', '=', True), ('state', 'in', ['paid', 'done', 'invoiced']), ('qty', '!=', 0)]</field>
+        <field name="context">{'group_by': ['bekvam_currency_id', 'bekvam_attributed_config_id', 'bekvam_visit_type']}</field>
+        <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'pivot', 'view_id': ref('origin_report_pivot')}), (0, 0, {'view_mode': 'tree', 'view_id': ref('origin_report_tree')})]"/>
+        <field name="help" type="html"><p>Venta neta sin IVA después de descuentos, incluyendo montaje, domicilio y devoluciones vinculadas. Las operaciones antiguas sin respuesta se muestran como Sin clasificación histórica; una devolución sin vínculo queda Sin atribución. Los abonos sin líneas no suman ventas. El conteo de filas corresponde a líneas, no a compradores. Compare totales únicamente en una misma moneda; no sume monedas diferentes.</p></field>
+    </record>
+    <menuitem id="origin_report_menu" name="Ventas por primera visita" action="origin_report_action" parent="point_of_sale.menu_point_root" groups="point_of_sale.group_pos_user" sequence="90"/>
+</odoo>

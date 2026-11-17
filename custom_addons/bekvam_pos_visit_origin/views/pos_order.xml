@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="pos_order_origin" model="ir.ui.view">
+        <field name="name">pos.order.bekvam.origin</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Visita declarada en esta compra">
+                    <field name="bekvam_visit_type" attrs="{'readonly': [('state', 'in', ['paid', 'done', 'invoiced'])]}"/>
+                    <field name="bekvam_discovery_channel" attrs="{'invisible': [('bekvam_visit_type', '!=', 'first_visit')], 'readonly': [('state', 'in', ['paid', 'done', 'invoiced'])]}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

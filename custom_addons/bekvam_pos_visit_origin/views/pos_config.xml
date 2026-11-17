@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="pos_config_origin" model="ir.ui.view">
+        <field name="name">pos.config.bekvam.origin</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Primera visita Bekväm" groups="point_of_sale.group_pos_manager">
+                    <field name="bekvam_origin_scope"/>
+                    <field name="bekvam_origin_required_from" attrs="{'invisible': [('bekvam_origin_scope', '=', False)]}"/>
+                    <p>Activar únicamente en las sucursales físicas incluidas. Recargar el TPV después de configurar.</p>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
