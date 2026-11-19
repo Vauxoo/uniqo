@@ -24,7 +24,7 @@
 	branch = 16.0
 [submodule "apps"]
 	path = apps
-	url = git@git.vauxoo.com:vauxoo/apps.git
+	url = git@git.vauxoo.com:vauxoo-dev/apps.git
 	branch = 16.0
 [submodule "product-attribute"]
 	path = product-attribute
